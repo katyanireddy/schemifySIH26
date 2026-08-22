@@ -46,7 +46,9 @@ def get_recommendations(user: UserProfile):
             "match_score": result["match_score"],
             "status": result["status"],
             "matched_conditions": result["matched_conditions"],
-            "missing_conditions": result["missing_conditions"]
+            "missing_conditions": result["missing_conditions"],
+            "explanations": result["explanations"],
+            "improvements": result["improvements"]
         }
 
         # Put opportunity into the correct category
