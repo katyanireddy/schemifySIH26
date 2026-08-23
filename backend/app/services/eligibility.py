@@ -72,7 +72,7 @@ def check_eligibility(user, opportunity):
     requires_disability = opportunity.get("requires_disability", False)
 
     if requires_disability:
-        if user.get("disability_status", False):
+        if user.get("disability", False):
             matched.append("disability")
             explanations.append(
                 "You meet the disability eligibility requirement."
@@ -114,12 +114,52 @@ def check_eligibility(user, opportunity):
     courses = opportunity.get("courses") or []
 
     if courses:
-        if user["course"] in courses:
+        user_course = (
+            user.get("course") or ""
+        ).strip().lower()
+
+        normalized_courses = [
+            str(course).strip().lower()
+            for course in courses
+        ]
+
+        course_match = user_course in normalized_courses
+
+        # Generic / broad programmes
+        generic_terms = {
+            "all",
+            "all courses",
+            "any",
+            "any course",
+            "all disciplines",
+            "all streams",
+            "engineering",
+            "technology",
+            "technical",
+        }
+
+        if any(course in generic_terms for course in normalized_courses):
+            course_match = True
+
+        # B.Tech / B.E. are engineering degrees
+        if user_course in {"b.tech", "b.e.", "be", "btech"}:
+            if any(
+                course in {"engineering", "technology", "technical",
+                       "b.tech", "b.e.", "be", "btech"}
+                for course in normalized_courses
+            ):
+                course_match = True
+
+        if course_match:
             matched.append("course")
-            explanations.append("Your course is eligible.")
+            explanations.append(
+                "Your course is eligible."
+            )
         else:
             missing.append("course")
-            explanations.append("Your course is not included in the eligible courses.")
+            explanations.append(
+                "Your course is not included in the eligible courses."
+            )
 
     # YEAR
     eligible_years = opportunity.get("eligible_years") or []
@@ -221,7 +261,7 @@ def check_eligibility(user, opportunity):
     domicile_required = opportunity.get("domicile_required", False)
 
     if domicile_required:
-        user_domicile = (user.get("state") or "").lower()
+        user_domicile = (user.get("domicile_state") or "").lower()
         opportunity_state = (opportunity.get("state") or "").lower()
 
         if (
@@ -247,6 +287,135 @@ def check_eligibility(user, opportunity):
         score = round(
             len(matched) / total_conditions * 100
         )
+        # -------------------------
+    # RECOMMENDATION SCORE
+    # -------------------------
+    condition_weights = {
+        "category": 20,
+        "income": 18,
+        "course": 18,
+        "education": 15,
+        "state": 10,
+        "domicile": 10,
+        "gender": 8,
+        "year": 6,
+        "percentage": 5,
+        "institution_type": 4,
+        "previous_qualification": 4,
+        "age": 3,
+        "disability": 3
+    }
+
+    recommendation_score = 0
+
+    for condition in matched:
+        recommendation_score += condition_weights.get(
+            condition, 2
+        )
+
+    # Normalize to 100
+    total_weight = sum(condition_weights.values())
+
+    recommendation_score = round(
+        (recommendation_score / total_weight) * 100
+    )
+
+    # -------------------------
+    # BENEFIT + DEADLINE BOOST
+    # -------------------------
+
+    benefit_boost = 0
+
+    benefits = (opportunity.get("benefits") or "").lower()
+
+    # Financial support gets higher priority
+    if any(word in benefits for word in [
+        "scholarship",
+        "financial assistance",
+        "financial support",
+        "tuition",
+        "stipend",
+        "fee",
+        "₹",
+        "rs."
+    ]):
+        benefit_boost += 10
+
+    # Training / certification opportunities
+    elif any(word in benefits for word in [
+        "training",
+        "skill",
+        "certification",
+        "internship"
+    ]):
+        benefit_boost += 5
+
+
+    # Deadline boost
+    deadline_boost = 0
+
+    deadline = opportunity.get("deadline")
+
+    if deadline:
+        from datetime import date
+
+        try:
+            deadline_date = date.fromisoformat(str(deadline))
+
+            days_left = (deadline_date - date.today()).days
+
+            if 0 <= days_left <= 30:
+                deadline_boost = 8
+
+            elif 31 <= days_left <= 60:
+                deadline_boost = 5
+
+            elif 61 <= days_left <= 90:
+                deadline_boost = 3
+
+        except (ValueError, TypeError):
+            deadline_boost = 0
+
+
+    recommendation_score = min(
+        100,
+        recommendation_score
+        + benefit_boost
+        + deadline_boost
+    )
+
+    # -------------------------
+    # RECOMMENDATION REASONS
+    # -------------------------
+
+    recommendation_reasons = []
+
+    priority_conditions = [
+        "category",
+        "income",
+        "course",
+        "education",
+        "gender",
+        "state",
+        "domicile",
+        "year",
+        "percentage",
+        "institution_type"
+]
+
+    for condition in priority_conditions:
+        if condition in matched:
+            for explanation in explanations:
+                if condition.lower() in explanation.lower():
+                    recommendation_reasons.append(explanation)
+                    break
+
+    # Fallback if no specific reason was found
+    if not recommendation_reasons:
+        recommendation_reasons = explanations[:3]
+
+    # Keep it concise
+    recommendation_reasons = recommendation_reasons[:4]
 
     # STATUS
     critical_conditions = {
@@ -273,6 +442,16 @@ def check_eligibility(user, opportunity):
 
     else:
         status = "not_eligible"
+
+
+        # Recommendation score should only influence
+# opportunities the user can realistically pursue.
+
+    if status == "not_eligible":
+        recommendation_score = 0
+
+    elif status == "near_eligible":
+        recommendation_score = round(recommendation_score * 0.5)
 
         # -------------------------
     # IMPROVEMENT SUGGESTIONS
@@ -347,10 +526,12 @@ def check_eligibility(user, opportunity):
         )
 
     return {
-        "match_score": score,
-        "status": status,
-        "matched_conditions": matched,
-        "missing_conditions": missing,
-        "explanations": explanations,
-        "improvements": improvements
-    }
+    "match_score": score,
+    "recommendation_score": recommendation_score,
+    "status": status,
+    "matched_conditions": matched,
+    "missing_conditions": missing,
+    "explanations": explanations,
+    "recommendation_reasons": recommendation_reasons,
+    "improvements": improvements
+}
