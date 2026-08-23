@@ -42,13 +42,22 @@ def get_recommendations(user: UserProfile):
             "description": opportunity["description"],
             "benefits": opportunity["benefits"],
             "deadline": opportunity["deadline"],
-            "official_url": opportunity["official_url"],
+
+            # Eligibility score
             "match_score": result["match_score"],
+
+            # Personalized recommendation score
+            "recommendation_score": result["recommendation_score"],
+
             "status": result["status"],
             "matched_conditions": result["matched_conditions"],
             "missing_conditions": result["missing_conditions"],
             "explanations": result["explanations"],
-            "improvements": result["improvements"]
+            "recommendation_reasons": result["recommendation_reasons"],
+            "improvements": result["improvements"],
+            
+            "documents_required": opportunity.get("documents_required") or [],
+            "application_steps": opportunity.get("application_steps") or []  
         }
 
         # Put opportunity into the correct category
@@ -61,24 +70,32 @@ def get_recommendations(user: UserProfile):
         else:
             not_eligible.append(opportunity_result)
 
-    # Highest match first
+            
+
+    # Highest personalized recommendation first
     eligible.sort(
-        key=lambda x: x["match_score"],
+        key=lambda x: x["recommendation_score"],
         reverse=True
     )
 
     near_eligible.sort(
-        key=lambda x: x["match_score"],
+        key=lambda x: x["recommendation_score"],
         reverse=True
     )
 
+    # For not eligible schemes, keep eligibility score
     not_eligible.sort(
         key=lambda x: x["match_score"],
         reverse=True
     )
 
+    # Top 5 personalized recommendations
+    top_recommendations = eligible[:5]
+
     return {
+        "top_recommendations": top_recommendations,
         "eligible": eligible,
         "near_eligible": near_eligible,
         "not_eligible": not_eligible
+        
     }
