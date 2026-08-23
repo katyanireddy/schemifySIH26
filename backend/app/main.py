@@ -1,8 +1,17 @@
 from fastapi import FastAPI
 from app.database.connection import supabase
 from app.routes.recommendations import router as recommendations_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Schemify X API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(recommendations_router)
 
