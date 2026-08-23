@@ -1,10 +1,15 @@
 🔴 PRIORITY 1 — DATABASE
 Supabase setup
  Create Supabase project
+
  Create users table
+
  Create schemes / opportunities table
+
  Create applications table
+
  Create documents table
+ 
 Opportunity data
  Add 30–50 verified opportunities
  Scholarships
@@ -27,7 +32,7 @@ Each record should have:
  Required documents
  Deadline
  Official application link
- 
+
 🟠 PRIORITY 2 — USER FLOW
 
 Build this one complete flow:
@@ -146,4 +151,4 @@ Before the presentation:
  Test application link
  Test mobile view
  Check every button
- Remove dummy/broken data
+ Remove dummy/broken data 
