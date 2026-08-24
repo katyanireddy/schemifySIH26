@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from app.database.connection import supabase
 from app.routes.recommendations import router as recommendations_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.documents import router as documents_router
+from app.routes.applications import router as applications_router
+from app.routes.saved_opportunities import router as saved_opportunities_router
+from app.routes.reminders import router as reminders_router
+from app.routes.grievances import router as grievances_router
 
 app = FastAPI(title="Schemify X API")
 
@@ -14,6 +19,11 @@ app.add_middleware(
 )
 
 app.include_router(recommendations_router)
+app.include_router(documents_router)
+app.include_router(applications_router)
+app.include_router(saved_opportunities_router)
+app.include_router(reminders_router)
+app.include_router(grievances_router)
 
 
 @app.get("/")
