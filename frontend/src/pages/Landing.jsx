@@ -2,7 +2,11 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import ChatbotDrawer from '../components/ai/ChatbotDrawer';
-import heroMonument from '../assets/hero_monument.jpg';
+import heroBuilding from '../assets/hero_building.jpg';
+import cardScholarships from '../assets/card_scholarships.jpg';
+import cardSchemes from '../assets/card_schemes.jpg';
+import cardJobs from '../assets/card_jobs.jpg';
+import cardServices from '../assets/card_services.jpg';
 import { 
   Sparkles, 
   CheckCircle2, 
@@ -28,14 +32,14 @@ import {
 
 export const Landing = () => {
   
-  // Intersection Observer for scroll-reveal motion
+  // Intersection Observer for smooth scroll-reveal animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('opacity-100', 'translate-y-0');
-            entry.target.classList.remove('opacity-0', 'translate-y-8');
+            entry.target.classList.remove('opacity-0', 'translate-y-10');
             observer.unobserve(entry.target);
           }
         });
@@ -43,7 +47,7 @@ export const Landing = () => {
       { threshold: 0.1 }
     );
 
-    document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
+    document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
@@ -51,51 +55,49 @@ export const Landing = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-navy-950 transition-colors font-sans selection:bg-brand-500 selection:text-white">
       
-      {/* Header (No top utility bar) */}
+      {/* Main Navbar */}
       <Navbar />
 
-      {/* Cinematic Hero Section (Exact Visual Treatment from Reference) */}
-      <section className="relative overflow-hidden min-h-[580px] lg:min-h-[640px] flex items-center bg-navy-950 text-white">
+      {/* Hero Section — Full-Bleed Background + Smooth Dark Navy Gradient (Matching IMAGE 2) */}
+      <section className="relative overflow-hidden min-h-[580px] lg:min-h-[640px] flex items-center bg-[#070d1e] text-white">
         
-        {/* Right-Aligned Government Building Photograph */}
-        <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[60%] h-full z-0 overflow-hidden">
+        {/* Full-Bleed Background Image (Exact Rashtrapati Bhavan Asset from IMAGE 1) */}
+        <div className="absolute inset-0 z-0">
           <img 
-            src={heroMonument} 
-            alt="Government Secretariat Building" 
+            src={heroBuilding} 
+            alt="Rashtrapati Bhavan Secretariat Building" 
             className="w-full h-full object-cover object-center filter brightness-95"
           />
-          {/* Top & Bottom subtle vignettes */}
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40 pointer-events-none"></div>
+          {/* Integrated Dark Navy Gradient Overlay: Strongest on the left, fading smoothly toward the right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#070d1e] via-[#070d1e]/85 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070d1e] via-transparent to-[#070d1e]/40"></div>
         </div>
 
-        {/* Left Surface Gradient Overlay: Solid Deep Navy (Left) -> Smooth Transition -> Clear Image (Right) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/95 to-transparent w-full lg:w-[65%] z-10 pointer-events-none"></div>
-
         {/* Hero Content Container */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 py-16 lg:py-24 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-16 lg:py-24 w-full">
           <div className="max-w-2xl space-y-6 text-left">
             
-            {/* Small Eyebrow Pill */}
+            {/* Eyebrow Pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-brand-300 text-xs font-bold shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-saffron-400 animate-pulse" />
               <span className="uppercase tracking-wider">Smart Government Opportunities Platform</span>
             </div>
 
-            {/* Headline */}
+            {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]">
               Connecting Citizens to <br />
               <span className="text-white">Opportunities.</span> <br />
-              <span className="bg-gradient-to-r from-brand-400 via-purple-400 to-saffron-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-brand-400 via-indigo-300 to-saffron-400 bg-clip-text text-transparent">
                 Empowering Futures.
               </span>
             </h1>
 
-            {/* Description */}
+            {/* Supporting Description */}
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal max-w-xl">
               Discover government schemes, scholarships, internships, and services personalized for you. SevaSetu matches your profile against thousands of verified central and state opportunities in seconds.
             </p>
 
-            {/* CTAs */}
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
               <Link
                 to="/register"
@@ -119,7 +121,7 @@ export const Landing = () => {
 
       </section>
 
-      {/* Hero Category Navigation (Large Elevated Card Overlapping Bottom of Hero) */}
+      {/* Floating Horizontal Category Card (Overlapping Hero Bottom) */}
       <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-12 w-full">
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-2xl backdrop-blur-xl">
           
@@ -208,7 +210,7 @@ export const Landing = () => {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0">
                 <Award className="w-6 h-6" />
               </div>
@@ -218,7 +220,7 @@ export const Landing = () => {
               </div>
             </div>
 
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-100 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-100 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
                 <Globe className="w-6 h-6" />
               </div>
@@ -228,7 +230,7 @@ export const Landing = () => {
               </div>
             </div>
 
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-200 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-200 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-saffron-100 dark:bg-saffron-950 text-saffron-600 dark:text-saffron-400 flex items-center justify-center flex-shrink-0">
                 <Users className="w-6 h-6" />
               </div>
@@ -238,7 +240,7 @@ export const Landing = () => {
               </div>
             </div>
 
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-300 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-300 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-4 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
                 <Bot className="w-6 h-6" />
               </div>
@@ -253,7 +255,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Explore Government Opportunities & Services Section */}
+      {/* Explore Government Opportunities & Services Section (4 DIFFERENT Images per Card!) */}
       <section id="services" className="py-16 bg-white dark:bg-slate-900/60 border-y border-slate-200/80 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
@@ -278,11 +280,11 @@ export const Landing = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* Card 1: Scholarships */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
+            {/* Card 1: Scholarships (Student Photograph) */}
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
               <div className="h-44 relative bg-gradient-to-br from-indigo-900 to-brand-900 overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-85 group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url(${heroMonument})` }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                <img src={cardScholarships} alt="Scholarships Student" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
                   <GraduationCap className="w-5 h-5" />
                 </div>
@@ -293,7 +295,7 @@ export const Landing = () => {
                     Scholarships
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Find scholarships for students across India based on your academic eligibility and income parameters.
+                    Find scholarships for students across India based on your eligibility.
                   </p>
                 </div>
                 <Link to="/opportunities" className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline pt-2">
@@ -303,11 +305,11 @@ export const Landing = () => {
               </div>
             </div>
 
-            {/* Card 2: Government Schemes */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-100 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
+            {/* Card 2: Government Schemes (Architecture Photograph) */}
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-100 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
               <div className="h-44 relative bg-gradient-to-br from-brand-900 to-indigo-950 overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-85 group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url(${heroMonument})` }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                <img src={cardSchemes} alt="Government Schemes" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md">
                   <Building2 className="w-5 h-5" />
                 </div>
@@ -318,7 +320,7 @@ export const Landing = () => {
                     Government Schemes
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Discover central and state government schemes that match your personal profile and demographics.
+                    Discover central and state government schemes that match your profile.
                   </p>
                 </div>
                 <Link to="/opportunities" className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 dark:text-brand-400 group-hover:underline pt-2">
@@ -328,11 +330,11 @@ export const Landing = () => {
               </div>
             </div>
 
-            {/* Card 3: Internships & Jobs */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-200 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
+            {/* Card 3: Internships & Jobs (Professionals Photograph) */}
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-200 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
               <div className="h-44 relative bg-gradient-to-br from-amber-900 to-indigo-950 overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-85 group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url(${heroMonument})` }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                <img src={cardJobs} alt="Internships & Jobs" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-md">
                   <Briefcase className="w-5 h-5" />
                 </div>
@@ -343,7 +345,7 @@ export const Landing = () => {
                     Internships & Jobs
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Find verified internships, fellowships, and skill training opportunities for your career growth.
+                    Find verified internships, fellowships and job opportunities for your future.
                   </p>
                 </div>
                 <Link to="/opportunities" className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:underline pt-2">
@@ -353,11 +355,11 @@ export const Landing = () => {
               </div>
             </div>
 
-            {/* Card 4: Citizen Services */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-300 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
+            {/* Card 4: Citizen Services (Diverse Citizens Photograph) */}
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-300 group rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1">
               <div className="h-44 relative bg-gradient-to-br from-emerald-900 to-indigo-950 overflow-hidden">
-                <div className="absolute inset-0 bg-cover bg-center opacity-85 group-hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url(${heroMonument})` }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                <img src={cardServices} alt="Citizen Services" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
                   <Users className="w-5 h-5" />
                 </div>
@@ -368,7 +370,7 @@ export const Landing = () => {
                     Citizen Services
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Access important public services, document verification vaults, and grievances in one place.
+                    Access important public services and resources in one convenient place.
                   </p>
                 </div>
                 <Link to="/documents" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 group-hover:underline pt-2">
@@ -399,57 +401,57 @@ export const Landing = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             
             {/* Feature 1 */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-brand-500 dark:hover:border-brand-500 transition-colors">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-brand-500 dark:hover:border-brand-500 transition-colors">
               <div className="w-10 h-10 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center">
                 <Sparkles className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Personalized Matching</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                We match opportunities based on your exact profile, course, income, and demographics.
+                We match opportunities based on your profile and eligibility.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-100 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-emerald-500 dark:hover:border-emerald-500 transition-colors">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-100 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-emerald-500 dark:hover:border-emerald-500 transition-colors">
               <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Transparent Eligibility</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Know where you stand before you apply and view near-eligible conditions met.
+                Know where you stand before you apply and save your time.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-200 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-200 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors">
               <div className="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                 <FileText className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Document Readiness</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Get a clear list of required documents and stay updated on renewal dates.
+                Get a clear list of required documents and how to prepare them.
               </p>
             </div>
 
             {/* Feature 4 */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-300 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-amber-500 dark:hover:border-amber-500 transition-colors">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-300 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-amber-500 dark:hover:border-amber-500 transition-colors">
               <div className="w-10 h-10 rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                 <Layers className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">Application Tracking</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Track your applications with unique IDs and stay updated at every review stage.
+                Track your applications and stay updated at every step.
               </p>
             </div>
 
             {/* Feature 5 */}
-            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-400 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-saffron-500 dark:hover:border-saffron-500 transition-colors">
+            <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 delay-400 p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs hover:border-saffron-500 dark:hover:border-saffron-500 transition-colors">
               <div className="w-10 h-10 rounded-2xl bg-saffron-100 dark:bg-saffron-950 text-saffron-600 dark:text-saffron-400 flex items-center justify-center">
                 <Bot className="w-5 h-5" />
               </div>
               <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">AI-Powered Assistance</h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Get instant answers and smart recommendations from our 24/7 AI Assistant.
+                Get instant help and smart recommendations from our AI Assistant.
               </p>
             </div>
 
@@ -462,7 +464,7 @@ export const Landing = () => {
       <section className="py-16 bg-slate-50 dark:bg-navy-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-950 rounded-4xl p-8 sm:p-12 text-white shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/10 relative overflow-hidden">
+          <div className="scroll-reveal opacity-0 translate-y-10 transition-all duration-700 bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-950 rounded-4xl p-8 sm:p-12 text-white shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/10 relative overflow-hidden">
             
             <div className="space-y-3 max-w-xl text-center lg:text-left relative z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-saffron-400">
@@ -470,7 +472,7 @@ export const Landing = () => {
                 <span>Your Journey. Our Responsibility.</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black leading-tight">
-                Join SevaSetu today and unlock a world of government opportunities.
+                Join SevaSetu today and unlock a world of government opportunities personalized just for you.
               </h2>
               <p className="text-xs sm:text-sm text-brand-200 leading-relaxed">
                 Seamless digital public infrastructure designed specifically for every citizen of India.
@@ -521,7 +523,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Professional Government-Tech Footer */}
       <footer className="bg-navy-950 text-slate-400 text-xs border-t border-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
