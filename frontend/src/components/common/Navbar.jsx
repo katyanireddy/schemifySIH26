@@ -9,12 +9,7 @@ import {
   Globe, 
   LogOut, 
   LayoutDashboard, 
-  Phone, 
-  Clock, 
-  ChevronDown,
-  HelpCircle,
-  FileText,
-  ShieldAlert
+  ChevronDown 
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -36,46 +31,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full flex flex-col font-sans">
-      
-      {/* Top Utility Bar (Thin Dark Navy Strip matching IMAGE 2) */}
-      <div className="bg-navy-950 text-slate-300 border-b border-white/10 text-[11px] font-medium py-1.5 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          
-          {/* Left: Helpline & Working Hours */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-1.5 text-slate-300">
-              <Phone className="w-3 h-3 text-saffron-400" />
-              <span>Helpline: <strong className="text-white">1800 123 4567</strong></span>
-            </div>
-            <div className="hidden sm:flex items-center gap-1.5 text-slate-400">
-              <Clock className="w-3 h-3 text-brand-400" />
-              <span>Mon - Fri: 8:00 AM - 6:00 PM</span>
-            </div>
-          </div>
-
-          {/* Right: Quick Links */}
-          <div className="flex items-center gap-4 text-slate-300">
-            <Link to="/opportunities" className="hover:text-white transition-colors hidden md:inline">Schemes</Link>
-            <Link to="/grievances" className="hover:text-white transition-colors hidden md:inline">Grievances</Link>
-            <Link to="/reminders" className="hover:text-white transition-colors hidden md:inline">Help & Support</Link>
-            
-            <div className="relative group cursor-pointer flex items-center gap-1 hover:text-white">
-              <span>Quick Links</span>
-              <ChevronDown className="w-3 h-3 text-slate-400 group-hover:rotate-180 transition-transform" />
-              
-              <div className="absolute right-0 top-full mt-1 w-44 bg-navy-900 border border-slate-700 rounded-xl shadow-xl p-2 hidden group-hover:block z-50 text-xs">
-                <Link to="/opportunities" className="block px-3 py-1.5 hover:bg-slate-800 rounded-lg text-slate-200">State Schemes</Link>
-                <Link to="/documents" className="block px-3 py-1.5 hover:bg-slate-800 rounded-lg text-slate-200">Document Vault</Link>
-                <Link to="/grievances" className="block px-3 py-1.5 hover:bg-slate-800 rounded-lg text-slate-200">Grievance Portal</Link>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Main Navbar */}
+    <header className="sticky top-0 z-50 w-full font-sans transition-all duration-300">
       <div className={`transition-all duration-300 border-b ${
         scrolled 
           ? 'bg-white/95 dark:bg-navy-950/95 backdrop-blur-md shadow-lg border-slate-200/80 dark:border-slate-800/80 py-3' 
@@ -170,7 +126,6 @@ export const Navbar = () => {
 
         </div>
       </div>
-
     </header>
   );
 };

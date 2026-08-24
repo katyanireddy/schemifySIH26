@@ -28,7 +28,7 @@ import {
 
 export const Landing = () => {
   
-  // Lightweight Intersection Observer for performant scroll-reveal animations
+  // Intersection Observer for scroll-reveal motion
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -51,26 +51,28 @@ export const Landing = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-navy-950 transition-colors font-sans selection:bg-brand-500 selection:text-white">
       
-      {/* Header & Sticky Top Utility Nav */}
+      {/* Header (No top utility bar) */}
       <Navbar />
 
-      {/* Cinematic Full-Width Government-Tech Hero Section (Matching IMAGE 2) */}
-      <section className="relative overflow-hidden min-h-[560px] lg:min-h-[640px] flex items-center bg-navy-950 text-white">
+      {/* Cinematic Hero Section (Exact Visual Treatment from Reference) */}
+      <section className="relative overflow-hidden min-h-[580px] lg:min-h-[640px] flex items-center bg-navy-950 text-white">
         
-        {/* Full-Width Background Monument Image */}
-        <div className="absolute inset-0 z-0">
+        {/* Right-Aligned Government Building Photograph */}
+        <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[60%] h-full z-0 overflow-hidden">
           <img 
             src={heroMonument} 
             alt="Government Secretariat Building" 
-            className="w-full h-full object-cover object-center filter brightness-90 transition-transform duration-1000 scale-105"
+            className="w-full h-full object-cover object-center filter brightness-95"
           />
-          {/* Gradient Overlay: Deep Navy Left -> Semi-transparent Right for high text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-navy-950/40 dark:from-navy-950 dark:via-navy-950/90 dark:to-navy-950/40"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/60"></div>
+          {/* Top & Bottom subtle vignettes */}
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40 pointer-events-none"></div>
         </div>
 
+        {/* Left Surface Gradient Overlay: Solid Deep Navy (Left) -> Smooth Transition -> Clear Image (Right) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/95 to-transparent w-full lg:w-[65%] z-10 pointer-events-none"></div>
+
         {/* Hero Content Container */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-16 lg:py-24 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 py-16 lg:py-24 w-full">
           <div className="max-w-2xl space-y-6 text-left">
             
             {/* Small Eyebrow Pill */}
@@ -79,21 +81,21 @@ export const Landing = () => {
               <span className="uppercase tracking-wider">Smart Government Opportunities Platform</span>
             </div>
 
-            {/* Main Headline */}
+            {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.12]">
               Connecting Citizens to <br />
               <span className="text-white">Opportunities.</span> <br />
-              <span className="bg-gradient-to-r from-brand-400 via-indigo-300 to-saffron-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-brand-400 via-purple-400 to-saffron-400 bg-clip-text text-transparent">
                 Empowering Futures.
               </span>
             </h1>
 
-            {/* Supporting Description */}
+            {/* Description */}
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal max-w-xl">
               Discover government schemes, scholarships, internships, and services personalized for you. SevaSetu matches your profile against thousands of verified central and state opportunities in seconds.
             </p>
 
-            {/* CTA Buttons */}
+            {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
               <Link
                 to="/register"
@@ -117,8 +119,8 @@ export const Landing = () => {
 
       </section>
 
-      {/* Hero Category Navigation Strip (Floating immediately below hero, matching IMAGE 2) */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-12 w-full">
+      {/* Hero Category Navigation (Large Elevated Card Overlapping Bottom of Hero) */}
+      <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-12 w-full">
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-2xl backdrop-blur-xl">
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
@@ -200,7 +202,7 @@ export const Landing = () => {
         </div>
       </div>
 
-      {/* Clean Statistics Strip (Matching IMAGE 2) */}
+      {/* Clean Statistics Strip */}
       <section className="py-12 bg-slate-50 dark:bg-navy-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -251,7 +253,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Explore Government Opportunities & Services Section (Matching IMAGE 2) */}
+      {/* Explore Government Opportunities & Services Section */}
       <section id="services" className="py-16 bg-white dark:bg-slate-900/60 border-y border-slate-200/80 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
@@ -381,7 +383,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Why Choose SevaSetu Section (Matching IMAGE 2) */}
+      {/* Why Choose SevaSetu Section */}
       <section className="py-16 bg-slate-50 dark:bg-navy-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
@@ -456,7 +458,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Final CTA Banner ("Your Journey. Our Responsibility.", Matching IMAGE 2) */}
+      {/* Final CTA Banner */}
       <section className="py-16 bg-slate-50 dark:bg-navy-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -519,7 +521,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Professional Government-Tech Footer */}
+      {/* Footer */}
       <footer className="bg-navy-950 text-slate-400 text-xs border-t border-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
