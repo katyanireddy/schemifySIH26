@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       try {
         const parsed = JSON.parse(savedUser);
+        // Preserve existing user.id if already set; never overwrite real user ID
         if (!parsed.id) {
           parsed.id = getCurrentUserId();
         }
@@ -21,7 +22,8 @@ export const AuthProvider = ({ children }) => {
   });
 
   const login = (userData) => {
-    const userId = getCurrentUserId();
+    // TODO: Replace userData.id fallback with Supabase Auth session user UUID (user.id) upon production Auth wiring
+    const userId = userData?.id || userData?.user_id || getCurrentUserId();
     const defaultUser = {
       id: userId,
       name: userData?.fullName || userData?.name || 'Priya Sharma',
