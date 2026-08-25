@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../context/ProfileContext';
 import recommendationService from '../services/recommendationService';
@@ -50,6 +50,25 @@ export const Dashboard = () => {
   const [loading, setLoading] = useState(!recommendations);
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // Dynamically calculate profile completion percentage based on ProfileContext fields
+  const profileCompletion = useMemo(() => {
+    if (!profile) return 0;
+    const checks = [
+      Boolean(profile.education_level),
+      Boolean(profile.course),
+      Boolean(profile.year_of_study),
+      Boolean(profile.state),
+      Boolean(profile.category),
+      profile.annual_income !== undefined && profile.annual_income !== '',
+      Array.isArray(profile.skills) && profile.skills.length > 0,
+      Array.isArray(profile.interests) && profile.interests.length > 0,
+      Boolean(profile.career_goal),
+      Boolean(profile.age)
+    ];
+    const completedCount = checks.filter(Boolean).length;
+    return Math.round((completedCount / checks.length) * 100);
+  }, [profile]);
 
   const fetchRecommendations = async () => {
     setLoading(true);
@@ -124,17 +143,23 @@ export const Dashboard = () => {
               </p>
             </div>
 
-            {/* Profile Match Indicator */}
+            {/* Profile Completion Indicator (Calculated Dynamically) */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 relative z-10">
               <div className="px-4 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium space-y-1">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="font-bold text-slate-200">Profile Strength</span>
-                  <span className="font-black text-emerald-400">92%</span>
+                  <span className="font-bold text-slate-200">Profile Completion</span>
+                  <span className="font-black text-emerald-400">{profileCompletion}%</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
-                  <span className="text-emerald-400">Edu ✓</span> • 
-                  <span className="text-emerald-400">Skills ✓</span> • 
-                  <span className="text-emerald-400">Interests ✓</span>
+                  <span className={profile.education_level ? "text-emerald-400 font-bold" : "text-slate-400"}>
+                    Edu {profile.education_level ? "✓" : "○"}
+                  </span> • 
+                  <span className={profile.skills?.length ? "text-emerald-400 font-bold" : "text-slate-400"}>
+                    Skills {profile.skills?.length ? "✓" : "○"}
+                  </span> • 
+                  <span className={profile.career_goal ? "text-emerald-400 font-bold" : "text-slate-400"}>
+                    Goals {profile.career_goal ? "✓" : "○"}
+                  </span>
                 </div>
               </div>
 
