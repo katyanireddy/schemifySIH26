@@ -4,8 +4,7 @@ import Navbar from '../components/common/Navbar';
 import { useProfile } from '../context/ProfileContext';
 import recommendationService from '../services/recommendationService';
 import LoadingState from '../components/common/LoadingState';
-import ErrorState from '../components/common/ErrorState';
-import { User, GraduationCap, IndianRupee, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { User, GraduationCap, Code2, IndianRupee, ArrowRight, ArrowLeft, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 
 const INDIAN_STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa',
@@ -18,6 +17,23 @@ const INDIAN_STATES = [
 const CATEGORIES = ['General', 'OBC', 'SC', 'ST', 'EWS', 'Minority'];
 const EDUCATION_LEVELS = ['High School (10th)', 'Higher Secondary (12th)', 'Undergraduate', 'Postgraduate', 'Doctorate (Ph.D)', 'Diploma', 'ITI'];
 const INSTITUTION_TYPES = ['Recognized regular college/university', 'Government College', 'Private University', 'Deemed University', 'Autonomous Institute'];
+
+const SKILL_OPTIONS = [
+  'Java', 'Python', 'C', 'C++', 'Data Structures', 'Web Development', 
+  'React', 'AI / ML', 'Data Science', 'Cloud Computing', 'Cybersecurity', 
+  'UI/UX', 'Database', 'DevOps'
+];
+
+const INTEREST_OPTIONS = [
+  'Artificial Intelligence', 'Software Development', 'Data Science', 'Research', 
+  'Entrepreneurship', 'Cybersecurity', 'Cloud Computing', 'Web Development', 
+  'Innovation', 'Government Internships'
+];
+
+const CAREER_GOAL_OPTIONS = [
+  'Software Developer', 'AI/ML Engineer', 'Data Scientist', 'Researcher', 
+  'Cloud Engineer', 'Cybersecurity Engineer', 'Entrepreneur', 'Other'
+];
 
 export const ProfileSetup = () => {
   const { profile, saveProfileData } = useProfile();
@@ -35,6 +51,15 @@ export const ProfileSetup = () => {
     }));
   };
 
+  const toggleArrayItem = (field, item) => {
+    setFormData((prev) => {
+      const currentList = prev[field] || [];
+      const exists = currentList.includes(item);
+      const updated = exists ? currentList.filter((i) => i !== item) : [...currentList, item];
+      return { ...prev, [field]: updated };
+    });
+  };
+
   const handleNext = () => {
     setError('');
     if (step === 1) {
@@ -48,7 +73,7 @@ export const ProfileSetup = () => {
         return;
       }
     }
-    setStep((prev) => Math.min(prev + 1, 3));
+    setStep((prev) => Math.min(prev + 1, 4));
   };
 
   const handleBack = () => {
@@ -87,36 +112,37 @@ export const ProfileSetup = () => {
         {/* Page Title */}
         <div className="text-center space-y-2 mb-8">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
-            Eligibility Match Engine
+            Student Opportunity Engine
           </span>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white">
-            Set Up Your Citizen Profile
+            Set Up Your Student Profile
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
-            Your profile details are matched against real government eligibility criteria to unlock personalized scheme recommendations.
+            Your academic profile, skills, and eligibility are matched against thousands of verified student opportunities.
           </p>
         </div>
 
         {/* Step Progress Bar */}
-        <div className="flex items-center justify-between mb-8 max-w-md mx-auto w-full relative">
+        <div className="flex items-center justify-between mb-8 max-w-lg mx-auto w-full relative">
           <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-slate-200 dark:bg-slate-800 -z-0"></div>
           <div 
             className="absolute top-1/2 left-0 -translate-y-1/2 h-1 bg-brand-600 transition-all duration-300 -z-0"
-            style={{ width: `${((step - 1) / 2) * 100}%` }}
+            style={{ width: `${((step - 1) / 3) * 100}%` }}
           ></div>
 
           {[
             { id: 1, label: 'Demographics', icon: User },
             { id: 2, label: 'Education', icon: GraduationCap },
-            { id: 3, label: 'Income & Submit', icon: IndianRupee },
+            { id: 3, label: 'Skills & Goals', icon: Code2 },
+            { id: 4, label: 'Income & Submit', icon: IndianRupee },
           ].map((s) => {
             const Icon = s.icon;
             const isCompleted = step > s.id;
             const isCurrent = step === s.id;
             return (
-              <div key={s.id} className="flex flex-col items-center gap-1.5 z-10 bg-slate-50 dark:bg-slate-900 px-2">
+              <div key={s.id} className="flex flex-col items-center gap-1.5 z-10 bg-slate-50 dark:bg-slate-900 px-1">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all ${
                     isCompleted
                       ? 'bg-emerald-600 text-white shadow-md'
                       : isCurrent
@@ -126,7 +152,7 @@ export const ProfileSetup = () => {
                 >
                   {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <Icon className="w-4 h-4" />}
                 </div>
-                <span className={`text-[11px] font-semibold ${isCurrent ? 'text-brand-600 dark:text-brand-400' : 'text-slate-500'}`}>
+                <span className={`text-[10px] sm:text-[11px] font-semibold ${isCurrent ? 'text-brand-600 dark:text-brand-400' : 'text-slate-500'}`}>
                   {s.label}
                 </span>
               </div>
@@ -138,7 +164,7 @@ export const ProfileSetup = () => {
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-10 shadow-xl relative">
           
           {loading ? (
-            <LoadingState message="Sending profile to SevaSetu FastAPI Engine (POST /recommendations)..." />
+            <LoadingState message="Matching your student profile against SevaSetu Opportunities Engine..." />
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -156,7 +182,6 @@ export const ProfileSetup = () => {
                   </h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Age */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Age (Years) <span className="text-red-500">*</span>
@@ -172,7 +197,6 @@ export const ProfileSetup = () => {
                       />
                     </div>
 
-                    {/* Gender */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Gender</label>
                       <select
@@ -186,7 +210,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* State */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Current State <span className="text-red-500">*</span>
@@ -204,7 +227,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* Domicile State */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Domicile State</label>
                       <select
@@ -219,7 +241,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* Category */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Social Category <span className="text-red-500">*</span>
@@ -237,7 +258,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* Disability */}
                     <div className="space-y-1 sm:col-span-2 pt-2">
                       <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer">
                         <input
@@ -264,8 +284,6 @@ export const ProfileSetup = () => {
                   </h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    
-                    {/* Education Level */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Current Education Level <span className="text-red-500">*</span>
@@ -283,7 +301,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* Course */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Course / Stream <span className="text-red-500">*</span>
@@ -298,7 +315,6 @@ export const ProfileSetup = () => {
                       />
                     </div>
 
-                    {/* Year of Study */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Year of Study <span className="text-red-500">*</span>
@@ -317,7 +333,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* Percentage */}
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Academic Marks / Percentage (%)
@@ -334,7 +349,6 @@ export const ProfileSetup = () => {
                       />
                     </div>
 
-                    {/* Institution Type */}
                     <div className="space-y-1 sm:col-span-2">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Institution Type
@@ -351,7 +365,6 @@ export const ProfileSetup = () => {
                       </select>
                     </div>
 
-                    {/* Previous Qualification */}
                     <div className="space-y-1 sm:col-span-2">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Previous Qualification
@@ -364,16 +377,98 @@ export const ProfileSetup = () => {
                         className="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-slate-100"
                       />
                     </div>
-
                   </div>
                 </div>
               )}
 
-              {/* STEP 3: INCOME & SUBMIT */}
+              {/* STEP 3: SKILLS & CAREER GOALS (SMART EDUCATION EXTENSION) */}
               {step === 3 && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-brand-600" />
+                      Step 3: Skills, Interests & Career Goals
+                    </h2>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-200">
+                      Smart Student Profile
+                    </span>
+                  </div>
+
+                  {/* Skills Multi-select */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                      Select Your Skills (Multiple Select)
+                    </label>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {SKILL_OPTIONS.map((skill) => {
+                        const selected = (formData.skills || []).includes(skill);
+                        return (
+                          <button
+                            type="button"
+                            key={skill}
+                            onClick={() => toggleArrayItem('skills', skill)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                              selected
+                                ? 'bg-brand-600 text-white shadow-sm ring-2 ring-brand-400'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {selected ? `✓ ${skill}` : `+ ${skill}`}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Interests Multi-select */}
+                  <div className="space-y-2 pt-2">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                      Select Your Academic & Career Interests
+                    </label>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {INTEREST_OPTIONS.map((interest) => {
+                        const selected = (formData.interests || []).includes(interest);
+                        return (
+                          <button
+                            type="button"
+                            key={interest}
+                            onClick={() => toggleArrayItem('interests', interest)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                              selected
+                                ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-400'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {selected ? `✓ ${interest}` : `+ ${interest}`}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Career Goal Select */}
+                  <div className="space-y-1 pt-2 max-w-md">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Primary Career Goal
+                    </label>
+                    <select
+                      value={formData.career_goal || 'Software Developer'}
+                      onChange={(e) => handleChange('career_goal', e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 text-slate-900 dark:text-slate-100"
+                    >
+                      {CAREER_GOAL_OPTIONS.map((goal) => (
+                        <option key={goal} value={goal}>{goal}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 4: INCOME & SUBMIT */}
+              {step === 4 && (
                 <div className="space-y-5 animate-in fade-in duration-200">
                   <h2 className="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">
-                    Step 3: Annual Family Income
+                    Step 4: Annual Family Income & Final Verification
                   </h2>
 
                   <div className="space-y-4 max-w-md">
@@ -422,7 +517,7 @@ export const ProfileSetup = () => {
                   </button>
                 ) : <div />}
 
-                {step < 3 ? (
+                {step < 4 ? (
                   <button
                     type="button"
                     onClick={handleNext}

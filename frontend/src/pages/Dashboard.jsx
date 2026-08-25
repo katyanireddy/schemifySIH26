@@ -23,9 +23,22 @@ import {
   RefreshCw, 
   UserCheck,
   Clock,
-  ChevronRight
+  GraduationCap,
+  Award,
+  BookOpen
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const SMART_CATEGORIES = [
+  { label: 'Scholarships', icon: GraduationCap },
+  { label: 'Government Schemes', icon: Award },
+  { label: 'Internships', icon: Briefcase },
+  { label: 'Jobs', icon: Briefcase },
+  { label: 'Learning Programs', icon: BookOpen },
+  { label: 'Skill Development', icon: Sparkles },
+  { label: 'Fellowships', icon: Award },
+  { label: 'Innovation & Competitions', icon: Sparkles },
+];
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -36,6 +49,7 @@ export const Dashboard = () => {
   const [savedIds, setSavedIds] = useState(() => JSON.parse(localStorage.getItem('sevasetu_saved_ids')) || []);
   const [loading, setLoading] = useState(!recommendations);
   const [error, setError] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const fetchRecommendations = async () => {
     setLoading(true);
@@ -65,20 +79,24 @@ export const Dashboard = () => {
     });
   };
 
-  const topOpportunities = recommendations?.top_recommendations?.slice(0, 3) || [];
-  const totalEligibleCount = recommendations?.eligible?.length || (topOpportunities.filter(o => (o.status || '').toLowerCase() === 'eligible').length) || 12;
-  const totalNearEligibleCount = recommendations?.near_eligible?.length || (topOpportunities.filter(o => (o.status || '').toLowerCase().includes('near')).length) || 8;
+  const rawTopOpportunities = recommendations?.top_recommendations || [];
+  const topOpportunities = selectedCategory === 'All' 
+    ? rawTopOpportunities.slice(0, 3) 
+    : rawTopOpportunities.filter(o => (o.type || o.category || '').toLowerCase().includes(selectedCategory.toLowerCase())).slice(0, 3);
+
+  const totalEligibleCount = recommendations?.eligible?.length || (rawTopOpportunities.filter(o => (o.status || '').toLowerCase() === 'eligible').length) || 12;
+  const totalNearEligibleCount = recommendations?.near_eligible?.length || (rawTopOpportunities.filter(o => (o.status || '').toLowerCase().includes('near')).length) || 8;
   const totalMatchesCount = (recommendations?.top_recommendations?.length || 0) + (recommendations?.eligible?.length || 0) + (recommendations?.near_eligible?.length || 0) || 24;
 
   const upcomingDeadlinesMock = [
-    { title: 'National Scholarship Portal', date: '30 Sep 2026', daysLeft: '2 days left', urgency: 'High' },
-    { title: 'Govt. Internship Program', date: '15 Oct 2026', daysLeft: '17 days left', urgency: 'Medium' },
-    { title: 'Design Grant Scheme', date: '20 Oct 2026', daysLeft: '22 days left', urgency: 'Medium' },
-    { title: 'Young Innovator Fellowship', date: '25 Oct 2026', daysLeft: '27 days left', urgency: 'Low' },
+    { title: 'National Scholarship Portal 2026', date: '30 Sep 2026', daysLeft: '2 days left', urgency: 'High' },
+    { title: 'PM Government Research Internship', date: '15 Oct 2026', daysLeft: '17 days left', urgency: 'Medium' },
+    { title: 'AI & Data Science Skill Grant', date: '20 Oct 2026', daysLeft: '22 days left', urgency: 'Medium' },
+    { title: 'Young Innovator Student Fellowship', date: '25 Oct 2026', daysLeft: '27 days left', urgency: 'Low' },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-navy-950 flex transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-navy-950 flex transition-colors font-sans">
       
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
@@ -89,34 +107,53 @@ export const Dashboard = () => {
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-8 flex-1 max-w-7xl mx-auto w-full">
           
-          {/* Greeting Header Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-950 p-6 sm:p-8 rounded-3xl text-white shadow-xl border border-white/10 relative overflow-hidden">
+          {/* Smart Education Greeting Header Banner */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-950 p-6 sm:p-8 rounded-3xl text-white shadow-xl border border-white/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-saffron-500/10 rounded-full blur-3xl"></div>
 
-            <div className="space-y-1 relative z-10">
+            <div className="space-y-2 relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-saffron-300 backdrop-blur-xs">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Smart Education Student Engine</span>
+              </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
                 Good morning, {user?.name || 'Praneel'} 👋
               </h1>
               <p className="text-xs sm:text-sm text-brand-200">
-                Here are your personalized opportunities and eligibility updates.
+                Here are opportunities matched to your education ({profile.course || 'B.Tech'}), skills, and career goals.
               </p>
             </div>
 
-            <div className="flex items-center gap-3 relative z-10">
-              <Link
-                to="/profile-setup"
-                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white backdrop-blur-xs border border-white/20 transition-colors flex items-center gap-1.5"
-              >
-                <UserCheck className="w-4 h-4 text-emerald-400" />
-                <span>Edit Profile</span>
-              </Link>
-              <button
-                onClick={fetchRecommendations}
-                className="p-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white transition-colors shadow-xs"
-                title="Refresh Recommendations"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
+            {/* Profile Match Indicator */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 relative z-10">
+              <div className="px-4 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium space-y-1">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-bold text-slate-200">Profile Strength</span>
+                  <span className="font-black text-emerald-400">92%</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
+                  <span className="text-emerald-400">Edu ✓</span> • 
+                  <span className="text-emerald-400">Skills ✓</span> • 
+                  <span className="text-emerald-400">Interests ✓</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/profile-setup"
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white backdrop-blur-xs border border-white/20 transition-colors flex items-center gap-1.5"
+                >
+                  <UserCheck className="w-4 h-4 text-emerald-400" />
+                  <span>Edit Profile</span>
+                </Link>
+                <button
+                  onClick={fetchRecommendations}
+                  className="p-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white transition-colors shadow-xs"
+                  title="Refresh Recommendations"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -124,7 +161,7 @@ export const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link to="/opportunities">
               <StatCard
-                title="Total Matches"
+                title="Total Student Matches"
                 value={totalMatchesCount}
                 subtitle="+12 this week"
                 icon={Sparkles}
@@ -133,7 +170,7 @@ export const Dashboard = () => {
             </Link>
             <Link to="/opportunities">
               <StatCard
-                title="Eligible"
+                title="Eligible Schemes & Grants"
                 value={totalEligibleCount}
                 subtitle="View all"
                 icon={CheckCircle2}
@@ -142,7 +179,7 @@ export const Dashboard = () => {
             </Link>
             <Link to="/near-eligible">
               <StatCard
-                title="Near Eligible"
+                title="Near Eligible Opportunities"
                 value={totalNearEligibleCount}
                 subtitle="View all"
                 icon={AlertTriangle}
@@ -160,6 +197,36 @@ export const Dashboard = () => {
             </Link>
           </div>
 
+          {/* Smart Category Filter Strip */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Explore Opportunities by Category</h3>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <button
+                onClick={() => setSelectedCategory('All')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  selectedCategory === 'All'
+                    ? 'bg-brand-600 text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-brand-500'
+                }`}
+              >
+                All Opportunities
+              </button>
+              {SMART_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.label}
+                  onClick={() => setSelectedCategory(cat.label)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                    selectedCategory === cat.label
+                      ? 'bg-brand-600 text-white shadow-sm'
+                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-brand-500'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Main Dashboard Grid: Top Opportunities (Left) & Upcoming Deadlines (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
@@ -169,10 +236,10 @@ export const Dashboard = () => {
                 <div>
                   <h2 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-brand-600 dark:text-brand-400" />
-                    Top Opportunities For You
+                    Recommended For You
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Real-time matches returned from <code>POST /recommendations</code>
+                    Matched to your education, eligibility, skills ({profile.skills?.slice(0, 2).join(', ')}) and career goals.
                   </p>
                 </div>
 
@@ -186,13 +253,15 @@ export const Dashboard = () => {
               </div>
 
               {loading ? (
-                <LoadingState message="Fetching top 3 recommendations from FastAPI engine..." />
+                <LoadingState message="Analyzing student recommendations from SevaSetu Engine..." />
               ) : error ? (
                 <ErrorState message={error} onRetry={fetchRecommendations} />
               ) : topOpportunities.length === 0 ? (
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center space-y-2">
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No opportunities matched your exact profile.</p>
-                  <p className="text-xs text-slate-500">Try updating your course or income level in Profile Setup.</p>
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No opportunities matched your selected category.</p>
+                  <button onClick={() => setSelectedCategory('All')} className="text-xs font-bold text-brand-600 hover:underline">
+                    View All Categories
+                  </button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -213,7 +282,7 @@ export const Dashboard = () => {
               )}
             </div>
 
-            {/* Upcoming Deadlines Column (Inspired by Reference Image 1) */}
+            {/* Upcoming Deadlines Column */}
             <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-xs space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
@@ -247,10 +316,10 @@ export const Dashboard = () => {
 
           </div>
 
-          {/* Citizen Quick Action Tiles */}
+          {/* Student Quick Action Tiles */}
           <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 space-y-4">
             <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-              Citizen Quick Actions
+              Student Quick Actions
             </h3>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -264,7 +333,7 @@ export const Dashboard = () => {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-600">Documents Vault</h4>
-                  <p className="text-[11px] text-slate-500">Upload & manage certificates</p>
+                  <p className="text-[11px] text-slate-500">Upload & manage marksheets</p>
                 </div>
               </Link>
 
@@ -277,7 +346,7 @@ export const Dashboard = () => {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-emerald-600">Applications</h4>
-                  <p className="text-[11px] text-slate-500">Track your applications</p>
+                  <p className="text-[11px] text-slate-500">Track scholarship applications</p>
                 </div>
               </Link>
 
@@ -290,7 +359,7 @@ export const Dashboard = () => {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-600">Grievances</h4>
-                  <p className="text-[11px] text-slate-500">Register or track complaints</p>
+                  <p className="text-[11px] text-slate-500">Report portal & stipend delays</p>
                 </div>
               </Link>
 
@@ -303,7 +372,7 @@ export const Dashboard = () => {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-600">AI Assistant</h4>
-                  <p className="text-[11px] text-slate-500">Ask scheme questions</p>
+                  <p className="text-[11px] text-slate-500">Ask student opportunity FAQs</p>
                 </div>
               </Link>
 

@@ -5,7 +5,7 @@ const ProfileContext = createContext();
 export const ProfileProvider = ({ children }) => {
   const [profile, setProfile] = useState(() => {
     const saved = localStorage.getItem('sevasetu_profile');
-    return saved ? JSON.parse(saved) : {
+    const defaultData = {
       age: 19,
       state: 'Bihar',
       category: 'OBC',
@@ -18,8 +18,28 @@ export const ProfileProvider = ({ children }) => {
       percentage: 90,
       domicile_state: 'Bihar',
       previous_qualification: 'Class XII',
-      disability: false
+      disability: false,
+      // Smart Education Student Extensions
+      skills: ['Java', 'Python', 'Web Development', 'AI / ML'],
+      interests: ['Artificial Intelligence', 'Software Development', 'Government Internships'],
+      career_goal: 'Software Developer'
     };
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...defaultData,
+          ...parsed,
+          skills: parsed.skills || defaultData.skills,
+          interests: parsed.interests || defaultData.interests,
+          career_goal: parsed.career_goal || defaultData.career_goal
+        };
+      } catch (e) {
+        return defaultData;
+      }
+    }
+    return defaultData;
   });
 
   const [recommendations, setRecommendations] = useState(() => {
