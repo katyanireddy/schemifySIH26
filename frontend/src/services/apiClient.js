@@ -15,15 +15,22 @@ apiClient.interceptors.response.use(
   (error) => {
     let errorMessage = 'An unexpected error occurred. Please try again.';
     if (error.response) {
-      if (error.response.status === 422) {
-        errorMessage = 'Validation error. Please check your profile entries.';
+      const detail = error.response.data?.detail;
+      if (typeof detail === 'string') {
+        errorMessage = detail;
+      } else if (Array.isArray(detail)) {
+        errorMessage = detail.map((d) => d.msg || d.detail || JSON.stringify(d)).join(', ');
+      } else if (error.response.status === 422) {
+        errorMessage = 'Validation error. Please check your request entries.';
+      } else if (error.response.status === 404) {
+        errorMessage = 'Requested resource not found on backend.';
       } else if (error.response.status >= 500) {
         errorMessage = 'Server error on backend service. Please try again later.';
       } else {
         errorMessage = error.response.data?.message || `Request failed with code ${error.response.status}`;
       }
     } else if (error.request) {
-      errorMessage = 'Unable to connect to SevaSetu recommendations service. Please check your internet connection.';
+      errorMessage = 'Unable to connect to SevaSetu backend service. Please check your internet connection.';
     }
     return Promise.reject(new Error(errorMessage));
   }

@@ -1,48 +1,77 @@
-// TEMPORARY MOCK IMPLEMENTATION
-// Replace with real backend API after backend contract is finalized.
-
-import initialMockReminders from '../data/mockReminders';
-
-let inMemoryReminders = [...initialMockReminders];
+import apiClient from './apiClient';
+import { getCurrentUserId } from './userService';
 
 export const reminderService = {
   getReminders: async () => {
-    // TEMPORARY MOCK IMPLEMENTATION
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...inMemoryReminders]), 100);
+    const userId = getCurrentUserId();
+    const response = await apiClient.get(`/reminders/user/${userId}`);
+    const resData = response.data?.data || response.data || [];
+    const rawReminders = Array.isArray(resData) ? resData : [];
+
+    const now = new Date();
+
+    return rawReminders.map((rem) => {
+      const dueStr = rem.reminder_at ? rem.reminder_at.split('T')[0] : '2026-12-31';
+      const due = new Date(dueStr);
+      const diffDays = Math.max(0, Math.ceil((due.getTime() - now.getTime()) / (1000 * 3600 * 24)));
+
+      const opp = rem.opportunity || {};
+
+      return {
+        id: rem.id || rem.reminder_id,
+        opportunityId: rem.opportunity_id,
+        title: rem.message || opp.name || 'Citizen Reminder',
+        category: rem.reminder_type || 'Deadline Alert',
+        dueDate: dueStr,
+        urgency: diffDays <= 7 ? 'High' : 'Medium',
+        daysRemaining: diffDays,
+        status: rem.status || 'pending',
+        relatedType: rem.reminder_type || 'Opportunity',
+        relatedId: rem.opportunity_id,
+        relatedLink: rem.opportunity_id ? `/opportunities` : '/documents',
+        notes: rem.message || ''
+      };
     });
   },
 
   createReminder: async (reminderPayload) => {
-    // TEMPORARY MOCK IMPLEMENTATION
-    return new Promise((resolve) => {
-      const now = new Date();
-      const due = new Date(reminderPayload.dueDate || '2026-12-31');
-      const diffDays = Math.max(0, Math.ceil((due.getTime() - now.getTime()) / (1000 * 3600 * 24)));
+    const userId = getCurrentUserId();
 
-      const newReminder = {
-        id: `rem-${Date.now()}`,
-        title: reminderPayload.title || 'New Citizen Reminder',
-        category: reminderPayload.category || 'General Reminder',
-        dueDate: reminderPayload.dueDate || '2026-12-31',
-        urgency: reminderPayload.urgency || (diffDays <= 7 ? 'High' : 'Medium'),
-        daysRemaining: diffDays,
-        relatedType: reminderPayload.relatedType || 'General',
-        relatedId: reminderPayload.relatedId || null,
-        relatedLink: reminderPayload.relatedLink || '/opportunities',
-        notes: reminderPayload.notes || ''
-      };
-      inMemoryReminders = [newReminder, ...inMemoryReminders];
-      setTimeout(() => resolve(newReminder), 120);
-    });
+    let reminderAt = reminderPayload.dueDate ? `${reminderPayload.dueDate}T09:00:00+05:30` : new Date(Date.now() + 7 * 86400000).toISOString();
+
+    const payload = {
+      user_id: userId,
+      opportunity_id: reminderPayload.opportunityId || reminderPayload.relatedId || null,
+      reminder_type: reminderPayload.category || reminderPayload.reminder_type || 'deadline',
+      reminder_at: reminderAt,
+      message: reminderPayload.title || reminderPayload.message || 'Scholarship deadline is approaching'
+    };
+
+    const response = await apiClient.post('/reminders', payload);
+    const rem = response.data?.data || response.data;
+
+    return {
+      id: rem.id || rem.reminder_id,
+      opportunityId: rem.opportunity_id,
+      title: rem.message || payload.message,
+      category: rem.reminder_type || payload.reminder_type,
+      dueDate: reminderPayload.dueDate || '2026-12-31',
+      urgency: 'Medium',
+      daysRemaining: 7,
+      status: 'pending',
+      relatedType: 'Opportunity',
+      notes: rem.message
+    };
+  },
+
+  updateReminder: async (reminderId, updatePayload) => {
+    const response = await apiClient.patch(`/reminders/${reminderId}`, updatePayload);
+    return response.data?.data || response.data;
   },
 
   deleteReminder: async (reminderId) => {
-    // TEMPORARY MOCK IMPLEMENTATION
-    return new Promise((resolve) => {
-      inMemoryReminders = inMemoryReminders.filter((r) => r.id !== reminderId);
-      setTimeout(() => resolve({ success: true, id: reminderId }), 100);
-    });
+    const response = await apiClient.delete(`/reminders/${reminderId}`);
+    return response.data || { success: true, id: reminderId };
   }
 };
 

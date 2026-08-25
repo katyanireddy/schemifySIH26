@@ -1,15 +1,29 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { getCurrentUserId } from '../services/userService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('sevasetu_user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    if (savedUser) {
+      try {
+        const parsed = JSON.parse(savedUser);
+        if (!parsed.id) {
+          parsed.id = getCurrentUserId();
+        }
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
   });
 
   const login = (userData) => {
+    const userId = getCurrentUserId();
     const defaultUser = {
+      id: userId,
       name: userData?.fullName || userData?.name || 'Priya Sharma',
       email: userData?.email || 'priya.sharma@example.com',
       role: userData?.role || 'Citizen',
